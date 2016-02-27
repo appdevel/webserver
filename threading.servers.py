@@ -10,8 +10,8 @@ class dataHttpProcessor(BaseHTTPRequestHandler):
         global data_server_thread
         global _stop
         if _stop.is_set():
-            data_server_thread.exit()
             _stop.clear()
+            data_server_thread.exit()
         global logger
         logger.info('POST recieved')        
         self.send_response(200)
