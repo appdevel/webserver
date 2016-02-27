@@ -7,6 +7,11 @@ logger = 0
 
 class dataHttpProcessor(BaseHTTPRequestHandler):        
     def do_POST(self):
+        global data_server_thread
+        global _stop
+        if _stop.is_set():
+            data_server_thread.exit()
+            _stop.clear()
         global logger
         logger.info('POST recieved')        
         self.send_response(200)
@@ -29,6 +34,7 @@ class dataHttpProcessor(BaseHTTPRequestHandler):
         
 class controlHttpProcessor(BaseHTTPRequestHandler):        
     def do_GET(self):
+        global _stop
         global logger
         logger.info('Recieved kill signal')        
         self.send_response(200)
@@ -36,7 +42,7 @@ class controlHttpProcessor(BaseHTTPRequestHandler):
         self.end_headers()
         try:
             answer = '<html><body><h1>You killed Kenny!</h1></body></html>'
-            data_server_thread._stop.set()
+            _stop.set()
         except Exception as err:
             logger.exception(err)
             answer = '<html><body><h1>Please wait until data server is up</h1></body></html>'
@@ -64,6 +70,9 @@ def createlog():
         logger.setLevel(3)
         logger.addHandler(ch)       
               
+global _stop
+_stop = threading.Event()
+
 global data_server_thread
 data_server_thread = threading.Thread(target=run, args=(HTTPServer, dataHttpProcessor, 8000))
 data_server_thread.start()
