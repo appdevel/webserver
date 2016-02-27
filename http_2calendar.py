@@ -3,12 +3,9 @@ import logging
 import json
 import datetime
 
-
 now = datetime.datetime.now()
 
-
 logger = 0
-filename = 'basic.json'
 
 class HttpProcessor(BaseHTTPRequestHandler):        # inheritance from BaseHTTP... class
     
