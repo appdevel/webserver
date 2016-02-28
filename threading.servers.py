@@ -26,7 +26,7 @@ class dataHttpProcessor(BaseHTTPRequestHandler):
         #data = self.rfile.read(length).decode("utf-8")
         sender = self.client_address[0] + ':' + str(self.client_address[1])
         #logger.info(sender + ' - Recieved data: ' + data) 
-        filename = 'basic1.json'
+        filename = 'calendar.json'
         try:
             with open(filename) as data_file:               # we parse raw data into json structure
                 data = json.load(data_file)                 # read initial value from parsed data    
