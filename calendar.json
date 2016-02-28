@@ -1,5 +1,17 @@
 {
+  "value": ["y","m","d"],
+  
   "muslim": "y - 622 + ((y-622)//32)",
+  "thai": "y + 543",
+  "bengal": "y + 593",
+  "mongol": "y - 1910",
+  
+  "nepal": {
+    "day": "d + 15",
+    "year": "y + 56",
+    "month": "m + 8"
+  }
+  
   "JDN": {
     "JDNday": "JDNe - ((153*JDNm +2)//5) +1",
     "JDNm": "(5*JDNe+2)//153",
@@ -10,17 +22,4 @@
     "JDNyear": "JDNd - 4800 + (JDNm//10)",
     "JDNd": "(JDNc*4 + 3)//1461"
   },
-  "thai": "y + 543",
-  "bengal": "y + 593",
-  "mongol": "y - 1910",
-  "value": [
-    "y",
-    "m",
-    "d"
-  ],
-  "nepal": {
-    "day": "d + 15",
-    "year": "y + 56",
-    "month": "m + 8"
-  }
 }
