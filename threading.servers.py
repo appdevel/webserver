@@ -7,7 +7,7 @@ import datetime
 logger = 0
 now = datetime.datetime.now()
 
-class dataHttpProcessor(BaseHTTPRequestHandler): 
+class calendarHttpProcessor(BaseHTTPRequestHandler): 
     def do_GET(self):
         global logger
         logger.info('GET recieved')       
@@ -26,7 +26,7 @@ class dataHttpProcessor(BaseHTTPRequestHandler):
         #data = self.rfile.read(length).decode("utf-8")
         sender = self.client_address[0] + ':' + str(self.client_address[1])
         #logger.info(sender + ' - Recieved data: ' + data) 
-        filename = 'calendar.json'
+        filename = 'basic1.json'
         try:
             with open(filename) as data_file:               # we parse raw data into json structure
                 data = json.load(data_file)                 # read initial value from parsed data    
@@ -41,7 +41,7 @@ class dataHttpProcessor(BaseHTTPRequestHandler):
         self.wfile.write(answer.encode('utf-8'))                    
         logger.info('send to client: ' + answer)
         
-class controlHttpProcessor(BaseHTTPRequestHandler):        
+class funcHttpProcessor(BaseHTTPRequestHandler):        
     def do_GET(self):
         global logger
         logger.info('Recieved kill signal')        
@@ -54,6 +54,26 @@ class controlHttpProcessor(BaseHTTPRequestHandler):
             logger.exception(err)
             answer = '<html><body><h1>Something wrong</h1></body></html>'
         self.wfile.write(answer.encode('utf-8'))
+    def do_POST(self):
+        global logger
+        logger.info('POST recieved')        
+        self.send_response(200)
+        self.send_header('content-type','application/json;charset=utf-8')
+        self.end_headers()
+        length = int(self.headers['content-length'])
+        data = self.rfile.read(length).decode("utf-8")
+        sender = self.client_address[0] + ':' + str(self.client_address[1])
+        logger.info(sender + ' - Recieved data: ' + data) 
+        try:
+            data = json.loads(data)
+            x = float(data['value'])
+            answer = str(eval(data['expr']))
+            answer = '{"answer":%s}' % answer
+        except Exception as err:
+            logger.exception(err)
+            answer = str(err)
+        self.wfile.write(answer.encode('utf-8'))                    
+        logger.info('send to client: ' + answer)    
         
 def run(server_class = HTTPServer, handler_class = BaseHTTPRequestHandler, port = int):
         createlog()
@@ -77,11 +97,11 @@ def createlog():
         logger.setLevel(3)
         logger.addHandler(ch)       
               
-data_server_thread = threading.Thread(target=run, args=(HTTPServer, dataHttpProcessor, 8000))
-data_server_thread.start()
+calendar_server_thread = threading.Thread(target=run, args=(HTTPServer, calendarHttpProcessor, 8000))
+calendar_server_thread.start()
 
-control_server_thread = threading.Thread(target=run, args=(HTTPServer, controlHttpProcessor, 8001))
-control_server_thread.start()
+func_server_thread = threading.Thread(target=run, args=(HTTPServer, funcHttpProcessor, 8001))
+func_server_thread.start()
 
-data_server_thread.join()
-control_server_thread.join()
+calendar_server_thread.join()
+func_server_thread.join()
