@@ -26,7 +26,7 @@ JDN['JDNday'] = 'JDNe - ((153*JDNm +2)//5) +1'
 JDN['JDNmonth'] = 'JDNm + 3 - 12*(JDNm//10)'
 JDN['JDNyear'] = 'JDNd - 4800 + (JDNm//10)'
                                       
-with open('calendar.json', mode='w', encoding='utf-8') as f:                # open the file for writing in utf-8
+with open('calendar.json', mode='w', encoding='utf-8') as f:                 # open the file for writing in utf-8
     json.dump(calendar, f, indent=2,  ensure_ascii = False, sort_keys=False)         # write data to file with parameters
 
 print(calendar)
