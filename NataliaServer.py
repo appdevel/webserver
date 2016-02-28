@@ -4,7 +4,6 @@ import json
 import datetime
 
 now = datetime.datetime.now()
-
 logger = 0
 
 class HttpProcessor(BaseHTTPRequestHandler):        # inheritance from BaseHTTP... class
@@ -28,15 +27,50 @@ class HttpProcessor(BaseHTTPRequestHandler):        # inheritance from BaseHTTP.
         data = self.rfile.read(length).decode("utf-8")                          # reading recieve socket at length of recieved request 
         sender = self.client_address[0] + ':' + str(self.client_address[1])     # saving server's (our) address in variable, first address, second - port
         logger.info(sender + ' - Recieved data: ' + data)                       # writing in log file received data
-        filename = 'basic1.json'
+        filename = 'calendar.json'
         try:                                                # if everything ok...
             with open(filename) as data_file:               # we parse raw data into json structure
                 data = json.load(data_file)                 # read initial value from parsed data    
+            
             y = now.year                                    # take the sysdate
             m = now.month
-            d = now.day       
-            answer = (eval(data['JDN']))                    # calculate expression and transform result into string
-            answer = '{"answer":%d}' % answer               # transform 'answer' into json field format 
+            d = now.day  
+            
+            #temporary variables for evaluation process
+            JDNnum = int(eval(data['JDN']['JDNnum']))
+            JDNc = int(eval(data['JDN']['JDNc']))
+            JDNd = int(eval(data['JDN']['JDNd']))
+            JDNe = int(eval(data['JDN']['JDNe']))
+            JDNm = int(eval(data['JDN']['JDNm']))
+          
+            #dict. for sending answer
+            answerdict = dict()   
+            NOW = dict()
+            
+            answerdict['NOW'] = NOW  
+            NOW['day'] = d
+            NOW['month'] = m
+            NOW['year'] = y    
+            
+            answerdict['muslim'] = int(eval(data['muslim']))
+            answerdict['mongol'] = int(eval(data['mongol']))
+            answerdict['bengal'] = int(eval(data['bengal']))
+            answerdict['thai'] = int(eval(data['thai']))
+            
+            nepal = dict()              # subdict for nepal
+            answerdict['nepal'] = nepal
+            nepal['day'] = int(eval(data['nepal']['day'])) 
+            nepal['month'] = int(eval(data['nepal']['month'])) 
+            nepal['year'] = int(eval(data['nepal']['year']))             
+            
+            JDN = dict()                 # subdict for JDN
+            answerdict['JDN'] = JDN            
+            JDN['JDNday'] = int(eval(data['JDN']['JDNday'])) 
+            JDN['JDNmonth'] = int(eval(data['JDN']['JDNmonth']))
+            JDN['JDNyear'] = int(eval(data['JDN']['JDNyear'])) 
+       
+            answer = json.dumps(answerdict, sort_keys=False)        #put answerdict structure in a json format string
+            
         except Exception as err:                            # ... and if everything is fucked up
             logger.exception(err)                           # write error message into log file
             answer = str(err)                               # write error answer into 'answer'
