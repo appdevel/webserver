@@ -5,7 +5,15 @@ import threading
 
 logger = 0
 
-class dataHttpProcessor(BaseHTTPRequestHandler):        
+class dataHttpProcessor(BaseHTTPRequestHandler): 
+    def do_GET(self):
+            global logger
+            logger.info('GET recieved')        
+            self.send_response(200)
+            self.send_header('content-type','text/html;charset=utf-8')
+            self.end_headers()
+            answer = '<html><body><h1>Data server is up!</h1></body></html>'
+            self.wfile.write(answer.encode('utf-8'))    
     def do_POST(self):
         global data_server_thread
         global _stop
@@ -22,10 +30,13 @@ class dataHttpProcessor(BaseHTTPRequestHandler):
         sender = self.client_address[0] + ':' + str(self.client_address[1])
         logger.info(sender + ' - Recieved data: ' + data) 
         try:
-            data = json.loads(data)
-            x = float(data['value'])
-            answer = str(eval(data['expr']))
-            answer = '{"answer":%s}' % answer
+            with open(filename) as data_file:               # we parse raw data into json structure
+                data = json.load(data_file)                 # read initial value from parsed data    
+            y = now.year                                    # take the sysdate
+            m = now.month
+            d = now.day       
+            answer = (eval(data['JDN']))                    # calculate expression and transform result into string
+            answer = '{"answer":%d}' % answer               # transform 'answer' into json field format 
         except Exception as err:
             logger.exception(err)
             answer = str(err)
