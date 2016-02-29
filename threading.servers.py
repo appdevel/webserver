@@ -134,7 +134,8 @@ def createlog():
         
         logger = logging.getLogger('HTTP')              
         logger.setLevel(3)
-        logger.addHandler(ch)       
+        logger.addHandler(ch)
+        logger.handlers = [logger.handlers[0], ]
               
 calendar_server_thread = threading.Thread(target=run, args=(HTTPServer, calendarHttpProcessor, 8000))
 calendar_server_thread.start()
