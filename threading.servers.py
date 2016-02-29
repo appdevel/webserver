@@ -20,7 +20,7 @@ class calendarHttpProcessor(BaseHTTPRequestHandler):
         
     def do_POST(self):
         global logger
-        logger.info('POST recieved') 
+        logger.info('Calendar POST recieved') 
         self.send_response(200)
         self.send_header("content-type","application/json;charset=utf-8")
         self.end_headers()
@@ -36,40 +36,40 @@ class calendarHttpProcessor(BaseHTTPRequestHandler):
             y = now.year                                    # take the sysdate
             m = now.month
             d = now.day  
-            print('1')
+            
             #temporary variables for evaluation process
             JDNnum = int(eval(data['JDN']['JDNnum']))
             JDNc = int(eval(data['JDN']['JDNc']))
             JDNd = int(eval(data['JDN']['JDNd']))
             JDNe = int(eval(data['JDN']['JDNe']))
             JDNm = int(eval(data['JDN']['JDNm']))
-            print('2')
+            
             #dict. for sending answer
             answerdict = dict()   
             NOW = dict()
-            print('3')
+            
             answerdict['NOW'] = NOW  
             NOW['day'] = d
             NOW['month'] = m
             NOW['year'] = y    
-            print('4')
+            
             answerdict['muslim'] = int(eval(data['muslim']))
             answerdict['mongol'] = int(eval(data['mongol']))
             answerdict['bengal'] = int(eval(data['bengal']))
             answerdict['thai'] = int(eval(data['thai']))
-            print('5')
+            
             nepal = dict()              # subdict for nepal
             answerdict['nepal'] = nepal
             nepal['day'] = int(eval(data['nepal']['day'])) 
             nepal['month'] = int(eval(data['nepal']['month'])) 
             nepal['year'] = int(eval(data['nepal']['year']))             
-            print('6')
+            
             JDN = dict()                 # subdict for JDN
             answerdict['JDN'] = JDN            
             JDN['JDNday'] = int(eval(data['JDN']['JDNday'])) 
             JDN['JDNmonth'] = int(eval(data['JDN']['JDNmonth']))
             JDN['JDNyear'] = int(eval(data['JDN']['JDNyear'])) 
-            print('7')
+            
             answer = json.dumps(answerdict, sort_keys=False)        #put answerdict structure in a json format string
             
         except Exception as err:
@@ -95,7 +95,7 @@ class funcHttpProcessor(BaseHTTPRequestHandler):
         
     def do_POST(self):
         global logger
-        logger.info('POST recieved')        
+        logger.info('Expr POST recieved')        
         self.send_response(200)
         self.send_header('content-type','application/json;charset=utf-8')
         self.end_headers()
