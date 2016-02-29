@@ -20,7 +20,7 @@ class calendarHttpProcessor(BaseHTTPRequestHandler):
         
     def do_POST(self):
         global logger
-        logger.info('Calendar POST recieved') 
+        logger.info('Calendar POST recieved')
         self.send_response(200)
         self.send_header("content-type","application/json;charset=utf-8")
         self.end_headers()
@@ -82,7 +82,7 @@ class funcHttpProcessor(BaseHTTPRequestHandler):
     
     def do_GET(self):
         global logger
-        logger.info('Recieved kill signal')        
+        logger.info('Expr GET Received')        
         self.send_response(200)
         self.send_header('content-type','text/html;charset=utf-8')
         self.end_headers()
