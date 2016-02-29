@@ -11,7 +11,7 @@ class calendarHttpProcessor(BaseHTTPRequestHandler):
     
     def do_GET(self):
         global logger
-        logger.info('GET recieved')       
+        logger.info('GET from 8000 port recieved')       
         self.send_response(200)
         self.send_header('content-type','text/html;charset=utf-8')
         self.end_headers()
@@ -20,7 +20,7 @@ class calendarHttpProcessor(BaseHTTPRequestHandler):
         
     def do_POST(self):
         global logger
-        logger.info('Calendar POST recieved')
+        logger.info('POST from 8000 port recieved')
         self.send_response(200)
         self.send_header("content-type","application/json;charset=utf-8")
         self.end_headers()
@@ -76,13 +76,13 @@ class calendarHttpProcessor(BaseHTTPRequestHandler):
             logger.exception(err)
             answer = str(err)
         self.wfile.write(answer.encode('utf-8'))                    
-        logger.info('send to client: ' + answer)
+        logger.info('Calculated date in JSON format: ' + answer)
         
 class funcHttpProcessor(BaseHTTPRequestHandler):
     
     def do_GET(self):
         global logger
-        logger.info('Expr GET Received')        
+        logger.info('GET from 8001 port received')        
         self.send_response(200)
         self.send_header('content-type','text/html;charset=utf-8')
         self.end_headers()
@@ -95,14 +95,14 @@ class funcHttpProcessor(BaseHTTPRequestHandler):
         
     def do_POST(self):
         global logger
-        logger.info('Expr POST recieved')        
+        logger.info('POST from 8001 port recieved')        
         self.send_response(200)
         self.send_header('content-type','application/json;charset=utf-8')
         self.end_headers()
         length = int(self.headers['content-length'])
         data = self.rfile.read(length).decode("utf-8")
         sender = self.client_address[0] + ':' + str(self.client_address[1])
-        logger.info(sender + ' - Recieved data: ' + data) 
+        logger.info(sender + ' - Recieved data on 8001 port: ' + data) 
         try:
             data = json.loads(data)
             x = float(data['value'])
@@ -112,7 +112,7 @@ class funcHttpProcessor(BaseHTTPRequestHandler):
             logger.exception(err)
             answer = str(err)
         self.wfile.write(answer.encode('utf-8'))                    
-        logger.info('send to client: ' + answer)    
+        logger.info('Calculated answer in JSON format: ' + answer)    
         
 def run(server_class = HTTPServer, handler_class = BaseHTTPRequestHandler, port = int):
         createlog()
@@ -123,11 +123,11 @@ def run(server_class = HTTPServer, handler_class = BaseHTTPRequestHandler, port 
 def createlog():    
         global logger
     
-        ch = logging.FileHandler('http_2.log')
+        ch = logging.FileHandler('logger.log')
         ch.setLevel(3)
 
         # create formatter
-        formatter = logging.Formatter('%(asctime)s - %(name)s : %(levelname)s - %(message)s')
+        formatter = logging.Formatter('[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s')
     
         # add formatter to ch
         ch.setFormatter(formatter)
