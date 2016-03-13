@@ -4,6 +4,7 @@ import json
 import threading
 import datetime
 import socketserver
+import time
 import ssl
 
 logger = 0
@@ -23,6 +24,8 @@ class calendarHttpProcessor(BaseHTTPRequestHandler):
         self.end_headers()
         answer = '<form name="inp" method="post"><p>Enter the number:</p><p><input maxlength="25" size="40" value="Calendar"></p></form>'
         self.wfile.write(answer.encode('utf-8'))
+        time.sleep(15)
+        print("sleep ended")
 
     def do_POST(self):
         global logger
