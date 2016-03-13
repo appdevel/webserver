@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        httpserver
 # Purpose:
 #
@@ -6,7 +6,7 @@
 #
 # Created:     18.02.2014
 # Copyright:   (c) apav 2014
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
 from socketserver import BaseServer, ThreadingMixIn
 import xml.etree.ElementTree as etree
@@ -23,21 +23,21 @@ import protocol
 
 logger = 0
 
-# class for for multithreading and Secure HTTP Server
-class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 
-     def __init__(self,address,handler):
+# class for multithreading and Secure HTTP Server
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    def __init__(self, address, handler):
         global logger
         try:
-            BaseServer.__init__(self,address,handler)
+            BaseServer.__init__(self, address, handler)
             self.socket = ssl.SSLSocket(
-                sock=socket.socket(self.address_family,self.socket_type),
+                sock=socket.socket(self.address_family, self.socket_type),
                 ssl_version=ssl.PROTOCOL_TLSv1,
                 certfile=settings.ServerParams["Certificate"],
                 server_side=True)
             self.server_bind()
             self.server_activate()
-      #   create http logger
+            #   create http logger
             logger = logging.getLogger('HTTP')
             logger.setLevel(settings.SystemParams["LogLevel"])
             logger.addHandler(log.ch)
@@ -46,32 +46,32 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
         except Exception as err:
             Logger.error('Error during HTTPS server starting')
 
-     def shutdown(self):
+    def shutdown(self):
         HTTPServer.shutdown(self)
         logger.info('HTTPS server stoped')
 
-class MyHandler(BaseHTTPRequestHandler):
 
-     def do_QUIT (self):
+class MyHandler(BaseHTTPRequestHandler):
+    def do_QUIT(self):
         self.send_response(200)
         self.end_headers()
         self.server.stop = True
         return
 
-     def do_HEAD(s):
+    def do_HEAD(s):
         s.send_response(200)
         s.send_header("Content-type", "text/html")
         s.end_headers()
         return
 
-     def do_GET(self):
+    def do_GET(self):
         global logger
         try:
             self.send_response(200)
             self.send_header("Content-type", "text/xml")
             self.end_headers()
-            localtime   = time.localtime()
-            timeString  = time.strftime("%d.%m.%Y %H:%M:%S", localtime)
+            localtime = time.localtime()
+            timeString = time.strftime("%d.%m.%Y %H:%M:%S", localtime)
             # Check db connection
             settings.database.checkconnection()
             answer = '<?xml version="1.0" encoding="utf-8"?> \
@@ -80,21 +80,21 @@ class MyHandler(BaseHTTPRequestHandler):
                       <ErrorString errorCode="%d">%s</ErrorString> \
                      </Response>' % (timeString, -1, settings.database.geterrordescription(-1))
             self.wfile.write(answer.encode("utf-8"))
-           # message =  threading.currentThread().getName()
-           # print (message)
+            # message =  threading.currentThread().getName()
+            # print (message)
             logger.error('GET request recieved')
         except IOError as err:
             logger.error(str(err))
-            self.send_error(404,str(err))
+            self.send_error(404, str(err))
         return
 
-     def do_POST(self):
+    def do_POST(self):
         global logger
-#        message =  threading.currentThread().getName()
-#        print (message)
+        #        message =  threading.currentThread().getName()
+        #        print (message)
         try:
             ctype, pdict = parse_header(self.headers['content-type'])
-           # logger.debug(self.headers)
+            # logger.debug(self.headers)
         except IOError as err:
             logger.error(str(err))
             self.send_error(404, str(err))
@@ -110,8 +110,8 @@ class MyHandler(BaseHTTPRequestHandler):
                     answer = parse_answer[1]
                 else:
                     res = 'ERROR'
-                    localtime   = time.localtime()
-                    timeString  = time.strftime("%d.%m.%Y %H:%M:%S", localtime)
+                    localtime = time.localtime()
+                    timeString = time.strftime("%d.%m.%Y %H:%M:%S", localtime)
                     answer = '<?xml version="1.0" encoding="utf-8"?>' \
                              '<Response datetime="%s">' \
                              '<ResultCode>%s</ResultCode>' \
@@ -127,8 +127,8 @@ class MyHandler(BaseHTTPRequestHandler):
                 self.send_error(404, str(err))
         else:
             try:
-                localtime   = time.localtime()
-                timeString  = time.strftime("%d.%m.%Y %H:%M:%S", localtime)
+                localtime = time.localtime()
+                timeString = time.strftime("%d.%m.%Y %H:%M:%S", localtime)
                 self.send_response(200)
                 self.send_header("Content-type", "text/xml")
                 self.end_headers()
@@ -141,5 +141,5 @@ class MyHandler(BaseHTTPRequestHandler):
                 logger.error('Wrong content-type header')
             except IOError as err:
                 logger.error(str(err))
-                self.send_error(404,str(err))
+                self.send_error(404, str(err))
         return
