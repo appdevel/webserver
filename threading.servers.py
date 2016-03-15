@@ -22,7 +22,7 @@ class calendarHttpProcessor(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('content-type', 'text/html;charset=utf-8')
         self.end_headers()
-        answer = '<form name="inp" method="post"><p>Enter the number:</p><p><input maxlength="25" size="40" value="Calendar"></p></form>'
+        answer = '<form name="inp" method="post"><p>Port 8000, method:</p><p><input maxlength="25" size="40" value="GET"></p></form>'
         self.wfile.write(answer.encode('utf-8'))
         time.sleep(15)
         print("sleep ended")
@@ -96,7 +96,7 @@ class funcHttpProcessor(BaseHTTPRequestHandler):
         self.send_header('content-type', 'text/html;charset=utf-8')
         self.end_headers()
         try:
-            answer = '<html><body><h1>You killed Kenny!</h1></body></html>'
+            answer = '<html><body><h1>Port 8001, method GET</h1></body></html>'
         except Exception as err:
             logger.exception(err)
             answer = '<html><body><h1>Something wrong</h1></body></html>'
